@@ -37,8 +37,8 @@ const theme = createTheme({
   },
 });
 
-const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Logout"];
+const pages = ["Products", "About us", "Help"];
+let settings = ["Profile", "Logout"];
 
 function Header(props) {
   const navigate = useNavigate();
@@ -53,6 +53,11 @@ function Header(props) {
 
   if (props.user) {
     name = props.user.name;
+  }
+  if (props.user && props.user.isAdmin) {
+    settings = ["Profile", "Logout", "Manage Products", "All Orders"];
+  } else {
+    settings = ["Profile", "Logout"];
   }
 
   const handleOpenNavMenu = (event) => {
@@ -70,13 +75,17 @@ function Header(props) {
     setAnchorElUser(null);
   };
 
-  const logoutUser = (handle) => {
-    console.log(handle);
+  const userSettingHandle = (handle) => {
     if (handle === "Logout") {
       cookies.remove("jwt");
       props.loginState(false);
+      navigate("/");
     } else if (handle === "Profile") {
       navigate("/profile");
+    } else if (handle === "Manage Products") {
+      navigate("/adminpanel/products");
+    } else if (handle === "All Orders") {
+      navigate("/adminpanel/allorders");
     }
   };
 
@@ -138,7 +147,7 @@ function Header(props) {
                 {pages.map((page) => (
                   <MenuItem key={page} onClick={handleCloseNavMenu}>
                     <Typography textAlign="center">
-                      <Link to={`/${page}`}>{page}</Link>
+                      <Link to={`/`}>{page}</Link>
                     </Typography>
                   </MenuItem>
                 ))}
@@ -170,7 +179,7 @@ function Header(props) {
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: "white", display: "block" }}
                 >
-                  <Link to={`/${page}`}>{page}</Link>
+                  <Link to={`/`}>{page}</Link>
                 </Button>
               ))}
             </Box>
@@ -205,7 +214,7 @@ function Header(props) {
                     <MenuItem key={setting} onClick={handleCloseUserMenu}>
                       <Typography
                         textAlign="center"
-                        onClick={(event) => logoutUser(setting)}
+                        onClick={(event) => userSettingHandle(setting)}
                       >
                         {setting}
                       </Typography>

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Alert,
   Avatar,
   Button,
   Container,
@@ -15,6 +16,16 @@ function RegisterScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const showError = (err) => {
+    setErrorMsg(err);
+    setError(true);
+    setTimeout(() => {
+      setError(false);
+    }, 2500);
+  };
 
   const formSubmit = async (e) => {
     e.preventDefault();
@@ -37,10 +48,11 @@ function RegisterScreen() {
         setName("");
         setEmail("");
         setPassword("");
-        console.log(resJson);
+        // console.log(resJson);
         navigate("/login");
       } else {
-        console.log("Some error occured");
+        console.log("Some error occured", resJson);
+        showError(resJson);
       }
     } catch (err) {
       console.log(err);
@@ -56,6 +68,13 @@ function RegisterScreen() {
           </Avatar>
           <Typography variant="h5">Sign up</Typography>
         </div>
+        {error ? (
+          <Alert variant="filled" severity="warning">
+            {errorMsg}
+          </Alert>
+        ) : (
+          <div></div>
+        )}
         <TextField
           margin="normal"
           required

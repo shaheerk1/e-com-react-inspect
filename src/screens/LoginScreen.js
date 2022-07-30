@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Button,
   Checkbox,
@@ -17,6 +18,8 @@ const cookies = new Cookies();
 function LoginScreen(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   //   const formSubmit = () => {
   //     console.log(email, password);
@@ -25,6 +28,14 @@ function LoginScreen(props) {
   // const getTokenCookie = () => {
   //   console.log("getCookie :", cookies.get("jwt"));
   // };
+
+  const showError = (err) => {
+    setErrorMsg(err);
+    setError(true);
+    setTimeout(() => {
+      setError(false);
+    }, 2500);
+  };
 
   const formSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +60,8 @@ function LoginScreen(props) {
         props.loginState(true);
         props.userDataProp();
       } else {
-        console.log("Some error occured");
+        console.log("Some error occured", resJwt);
+        showError(resJwt);
       }
     } catch (err) {
       console.log(err);
@@ -65,6 +77,13 @@ function LoginScreen(props) {
           </Avatar>
           <Typography variant="h5">Log in</Typography>
         </div>
+        {error ? (
+          <Alert variant="filled" severity="warning">
+            {errorMsg}
+          </Alert>
+        ) : (
+          <div></div>
+        )}
         <TextField
           margin="normal"
           required
